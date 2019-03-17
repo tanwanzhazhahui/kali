@@ -1,0 +1,56 @@
+centos7 VM VirtualBox设置共享目录时报错。
+
+
+
+步骤一：创建VM VirtualBox共享目录
+
+1.在window下创建VM的共享目录D:\workspace
+
+2.创建linux下的共享目录mkdir /mnt/workspace
+
+3.在VM操作界面上设置共享目录
+
+
+
+步骤二：安装控件
+
+1.进行linux，安装控件
+
+yum groupinstall "GNOME Desktop" "Graphical Administration Tools"
+
+ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target
+
+2.重启系统，进入界面化的centos7系统，然后在VM的操作界面上安装增强功能，按提示点击run安装
+
+
+
+
+
+步骤三：挂载共享盘
+
+mount -t vboxsf workspace /mnt/workspace
+
+ln -s /mnt/workspace /home/daiyu (软连接到用户daiyu下)
+
+
+
+步骤三报错：/sbin/mount.vboxsf: mounting failed with the error: No such device
+
+
+
+解决办法：
+
+yum clean all
+yum update
+yum install kernel
+yum install kernel-devel
+yum install kernel-headers
+yum install gcc
+yum install make  
+reboot
+
+
+cd /opt/VBoxGuestAdditions-*/init  
+./vboxadd setup
+reboot
+
